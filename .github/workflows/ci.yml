@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 23
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck and build
+        run: npm run build
+
+      - name: Verify schemas were prepared
+        run: |
+          test -d public/schemas || { echo "::error::public/schemas not generated"; exit 1; }
+          count=$(find public/schemas -name '*.json' | wc -l | tr -d ' ')
+          echo "Prepared $count schema files"
+          test "$count" -gt 0 || { echo "::error::no schemas prepared"; exit 1; }
