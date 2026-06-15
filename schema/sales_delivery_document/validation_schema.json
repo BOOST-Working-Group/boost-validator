@@ -44,9 +44,7 @@
         "type": "number"
       },
       "transactionId": {
-        "type": "string",
-        "pattern": "^TXN-[A-Z0-9-_]+$",
-        "description": "Foreign key to Transaction entity"
+        "type": "string"
       },
       "certificateCode": {
         "type": "string"

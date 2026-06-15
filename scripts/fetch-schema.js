@@ -7,10 +7,12 @@
  * This creates a local copy that can be committed to the repository,
  * removing the need for external dependencies at build time.
  *
- * Usage: node scripts/fetch-schema.js [--branch <branch>]
+ * Usage: node scripts/fetch-schema.js [--ref <tag>]
  *
  * Options:
- *   --branch <branch>  The branch to fetch from (default: main)
+ *   --ref <tag>  The release tag to fetch from (default: v3.4.2).
+ *                Alias: --tag. Pin to a published release, not a
+ *                moving branch (ADR-001 decision 5).
  */
 
 import { createWriteStream, createReadStream, existsSync, mkdirSync, rmSync, readdirSync, cpSync } from 'fs'
@@ -24,8 +26,11 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 // Configuration
-const GITHUB_REPO = 'carbondirect/BOOST'
-const DEFAULT_BRANCH = 'main'
+const GITHUB_REPO = 'BOOST-Working-Group/BOOST'
+// Pin to a published release tag (ADR-001 decision 5) so the validator
+// ships against a frozen schema while upstream main keeps moving. This
+// is what makes the Sep 1–Nov 30 schema freeze enforceable in code.
+const DEFAULT_REF = 'v3.4.2'
 const SCHEMA_PATH = 'drafts/current/schema'
 const OUTPUT_DIR = join(__dirname, '../schema')
 const TEMP_DIR = join(__dirname, '../.schema-temp')
@@ -35,16 +40,16 @@ const TEMP_DIR = join(__dirname, '../.schema-temp')
  */
 function parseArgs() {
   const args = process.argv.slice(2)
-  let branch = DEFAULT_BRANCH
+  let ref = DEFAULT_REF
 
   for (let i = 0; i < args.length; i++) {
-    if (args[i] === '--branch' && args[i + 1]) {
-      branch = args[i + 1]
+    if ((args[i] === '--ref' || args[i] === '--tag') && args[i + 1]) {
+      ref = args[i + 1]
       i++
     }
   }
 
-  return { branch }
+  return { ref }
 }
 
 /**
@@ -69,7 +74,7 @@ async function downloadFile(url, destPath) {
 /**
  * Extract tarball and get schema directory
  */
-async function extractSchema(tarballPath, branch) {
+async function extractSchema(tarballPath, ref) {
   const extractDir = join(TEMP_DIR, 'extracted')
 
   // Create extraction subdirectory
@@ -86,7 +91,7 @@ async function extractSchema(tarballPath, branch) {
       cwd: extractDir,
       filter: (path) => {
         // Only extract files from the schema directory
-        // Tarball structure: BOOST-<branch>/drafts/current/schema/...
+        // Tarball structure: BOOST-<ref>/drafts/current/schema/...
         const parts = path.split('/')
         // Allow the path if it starts with the schema path (after repo root dir)
         const pathAfterRoot = parts.slice(1).join('/')
@@ -96,7 +101,7 @@ async function extractSchema(tarballPath, branch) {
     })
   )
 
-  // Find the extracted directory (BOOST-main or BOOST-<branch>)
+  // Find the extracted directory (BOOST-<ref>, e.g. BOOST-3.4.2)
   const extractedDirs = readdirSync(extractDir)
 
   if (extractedDirs.length === 0) {
@@ -124,13 +129,13 @@ function copyDirectory(src, dest) {
  * Main function
  */
 async function main() {
-  const { branch } = parseArgs()
-  const tarballUrl = `https://github.com/${GITHUB_REPO}/archive/refs/heads/${branch}.tar.gz`
+  const { ref } = parseArgs()
+  const tarballUrl = `https://github.com/${GITHUB_REPO}/archive/refs/tags/${ref}.tar.gz`
   const tarballPath = join(TEMP_DIR, 'boost.tar.gz')
 
   console.log('🚀 Fetching BOOST schema from GitHub...\n')
   console.log(`   Repository: ${GITHUB_REPO}`)
-  console.log(`   Branch: ${branch}`)
+  console.log(`   Ref (tag): ${ref}`)
   console.log(`   Schema path: ${SCHEMA_PATH}`)
   console.log(`   URL: ${tarballUrl}\n`)
 
@@ -148,7 +153,7 @@ async function main() {
 
     // Extract schema
     console.log('📦 Extracting schema directory...')
-    const extractedSchemaPath = await extractSchema(tarballPath, branch)
+    const extractedSchemaPath = await extractSchema(tarballPath, ref)
     console.log('   ✓ Extraction complete\n')
 
     // Clear existing schema directory

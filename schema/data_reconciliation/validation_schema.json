@@ -22,14 +22,10 @@
         "pattern": "^REC-[A-Z0-9-_]+$"
       },
       "traceableUnitId": {
-        "type": "string",
-        "pattern": "^TRU-[A-Z0-9-_]+$",
-        "description": "Foreign key to TraceableUnit entity being reconciled"
+        "type": "string"
       },
       "transactionId": {
-        "type": "string",
-        "pattern": "^TXN-[A-Z0-9-_]+$",
-        "description": "Foreign key to Transaction entity being reconciled"
+        "type": "string"
       },
       "forestMeasurement": {
         "type": "number",
@@ -47,10 +43,8 @@
         "enum": [
           "pending",
           "resolved",
-          "disputed",
-          "investigating"
-        ],
-        "description": "Reconciliation status with standard values"
+          "disputed"
+        ]
       },
       "discrepancyReason": {
         "type": "string"
