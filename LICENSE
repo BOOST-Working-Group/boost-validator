@@ -1,17 +1,19 @@
 BOOST VALIDATOR TOOL LICENSE
 
-This validation tool incorporates components from the BOOST standard with proper attribution.
+This validation tool incorporates components from the BOOST standard with
+proper attribution. See BOOST_ATTRIBUTION.md for full provenance.
 
 === BOOST Schema Components ===
-Source: https://github.com/carbondirect/BOOST
-License: W3C Software and Document License  
-Copyright: BOOST Community Group contributors
+Source: https://github.com/BOOST-Working-Group/BOOST
+License: W3C Software and Document License
+Copyright: BOOST Working Group contributors
 
 BOOST schemas and examples used for validation are licensed under the W3C Software and Document License.
 
 === Validation Tool Code ===
 License: MIT License
-Copyright 2025 - BOOST Validator Tool
+Copyright 2025 Loamist (original boost-schema-validator)
+Copyright 2026 BOOST Working Group contributors (fork: boost-validator)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -1,6 +1,8 @@
-# BOOST Schema Validator
+# BOOST Validator
 
 A web application for validating BOOST entity schemas with LCFS compliance tracking.
+
+> **Provenance.** This tool began as [Loamist/boost-schema-validator](https://github.com/Loamist/boost-schema-validator) (MIT) and is maintained here by the BOOST Working Group. Continued development of the validation infrastructure — file upload, a server-side validation API, and regulatory sufficiency checks — is funded by the California Board of Forestry Joint Institute grant. See [BOOST_ATTRIBUTION.md](BOOST_ATTRIBUTION.md).
 
 ## Features
 
@@ -53,17 +55,18 @@ Output goes to `dist/` folder - ready for static hosting.
 
 ## Schema Management
 
-The `schema/` directory contains a local copy of the BOOST schemas from [carbondirect/BOOST](https://github.com/carbondirect/BOOST). This copy is committed to the repository so no external dependencies are required at build time.
+The `schema/` directory contains a local copy of the BOOST schemas from [BOOST-Working-Group/BOOST](https://github.com/BOOST-Working-Group/BOOST), pinned to a published release tag (currently `v3.4.2`). This copy is committed to the repository so no external dependencies are required at build time, and pinning to a tag keeps the validator stable while upstream `main` continues to evolve.
 
 ### Updating Schemas
 
-To fetch the latest schemas from GitHub:
+To re-fetch the pinned release schemas from GitHub:
 
 ```bash
-npm run fetch-schema
+npm run fetch-schema           # fetches the default pinned tag (v3.4.2)
+npm run fetch-schema -- --ref v3.4.3   # or pin to a different release
 ```
 
-This downloads schemas from `carbondirect/BOOST` (branch: main, path: `drafts/current/schema`) and saves them to `./schema/`.
+This downloads schemas from `BOOST-Working-Group/BOOST` at the given release tag (path: `drafts/current/schema`) and saves them to `./schema/`. To move the default pin, edit `DEFAULT_REF` in `scripts/fetch-schema.js`.
 
 To update and rebuild in one step:
 
