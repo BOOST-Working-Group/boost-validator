@@ -1,8 +1,11 @@
 name: Deploy to GitHub Pages
 
+# Public deployment is gated on the E&O (professional liability) binder
+# per ADR-001 (BOF §21.a perpetual indemnity). Auto-deploy on push is
+# DISABLED until the binder is in force; until then this workflow is
+# manual-only. To re-enable continuous deploy after the gate clears,
+# restore the `push:` trigger below.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
