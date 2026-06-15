@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
 import EntitySelector from './components/EntitySelector'
+import FileUpload from './components/FileUpload'
 import JsonEditor from './components/JsonEditor'
 import ValidationResults from './components/ValidationResults'
 import EntityRepresentation from './components/EntityRepresentation'
@@ -108,6 +109,9 @@ function App() {
           onEntityChange={setCurrentEntity}
           onJsonLoad={setJsonData}
         />
+
+        {/* File Upload — load a .json or .csv record into the editor */}
+        <FileUpload onLoad={setJsonData} />
 
         {/* Grid Layout for Editor and Results */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
